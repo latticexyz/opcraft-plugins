@@ -20,6 +20,7 @@ const Container = () => {
     // Bind "T" to open teleport UI
     inputs.bind("teleport", "T");
     inputs.down.on("teleport", () => {
+      if (!container.hasPointerLock) return;
       setVisible((v) => {
         container.setPointerLock(v);
         return !v;
