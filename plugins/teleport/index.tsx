@@ -16,16 +16,18 @@ const Container = () => {
   const [value, setValue] = useState("");
   const [hover, setHover] = useState(false);
 
+  function toggleUI() {
+    setVisible((v) => {
+      if (!container.hasPointerLock && !v) return v;
+      container.setPointerLock(v);
+      return !v;
+    });
+  }
+
   useEffect(() => {
     // Bind "T" to open teleport UI
     inputs.bind("teleport", "T");
-    inputs.down.on("teleport", () => {
-      if (!container.hasPointerLock) return;
-      setVisible((v) => {
-        container.setPointerLock(v);
-        return !v;
-      });
-    });
+    inputs.down.on("teleport", toggleUI);
   }, []);
 
   function executeTeleport() {
@@ -41,6 +43,7 @@ const Container = () => {
 
   return visible ? (
     <div style={Wrapper}>
+      <div style={Background} onClick={toggleUI} />
       <div style={Inner}>
         <input
           value={value}
@@ -68,8 +71,15 @@ const Wrapper = `
   display: grid;
   align-content: center;
   justify-content: center;
-  z-index: 100;
   pointer-events: none;
+`;
+
+const Background = `
+  position: absolute;
+  pointer-events: all;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.2);
 `;
 
 const Inner = `
@@ -81,6 +91,7 @@ const Inner = `
   box-shadow: 0 0 0 3px #555, 0 0 0 5px #000;
   grid-auto-flow: column;
   pointer-events: all;
+  z-index: 100;
 `;
 
 const Input = `
