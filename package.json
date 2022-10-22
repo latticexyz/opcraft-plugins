@@ -7,9 +7,25 @@
   "scripts": {
     "prepare": "husky install",
     "start": "esbuild ./plugins/* --bundle --servedir=www",
-    "build": "esbuild ./plugins/* --bundle --outdir=dist"
+    "build": "esbuild ./plugins/* --bundle --outdir=dist",
+    "update:types": "rm -rf types && mkdir types && mkdir types/contracts && cp ../opcraft/packages/client/types/index.d.ts types/ && cp -r ../opcraft/packages/contracts/types types/contracts/"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@babylonjs/core": "^5.29.0",
+    "@latticexyz/network": "^1.19.0",
+    "@latticexyz/recs": "^1.19.0",
+    "@latticexyz/services": "^1.19.0",
+    "@latticexyz/solecs": "^1.19.0",
+    "@latticexyz/std-client": "^1.19.0",
+    "@latticexyz/utils": "^1.19.0",
+    "contracts": "link:./types/contracts",
+    "ethers": "^5.7.2",
+    "mobx": "^6.6.2",
+    "nice-grpc-web": "^2.0.0",
+    "noa-engine": "^0.32.0",
+    "protobufjs": "^7.1.2",
+    "rxjs": "^7.5.7"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
@@ -21,7 +37,7 @@
     "typescript": "^4.8.4"
   },
   "lint-staged": {
-    "*.ts": "eslint --cache --fix",
-    "*.{ts,css,md,sol}": "prettier --write"
+    "plugins/**/*.ts": "eslint --cache --fix",
+    "plugins/**/*.{ts,css,md,sol}": "prettier --write"
   }
 }
