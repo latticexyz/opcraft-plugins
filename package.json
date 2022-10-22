@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "start": "yarn index && node ./scripts/esbuild.serve.js",
-    "build": "yarn index && node ./scripts/esbuild.build.js",
+    "start": "yarn index && esbuild --bundle ./plugins/* --servedir=www",
+    "build": "yarn index && esbuild --bundle ./plugins/* --outdir=www",
     "index": "rimraf www && node ./scripts/list.js",
     "update:types": "rm -rf types && mkdir types && mkdir types/contracts && cp ../opcraft/packages/client/types/index.d.ts types/ && cp -r ../opcraft/packages/contracts/types types/contracts/"
   },
