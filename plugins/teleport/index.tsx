@@ -50,6 +50,8 @@ const Container = () => {
           onInput={(e) => setValue((e.target as HTMLInputElement).value)}
           placeholder={"x,y,z"}
           style={Input}
+          onFocus={() => (inputs.disabled = true)}
+          onBlur={() => (inputs.disabled = false)}
         />
         <div
           onClick={executeTeleport}
