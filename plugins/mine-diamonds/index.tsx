@@ -1,11 +1,11 @@
 import { render } from "preact";
-import { useState, useEffect } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 const ID = "mine-diamond-root";
 
 const {
   noa: {
-    noa: { inputs, container },
+    noa: { inputs },
   },
   network: {
     api: { mine, getBlockAtPosition },
@@ -37,31 +37,16 @@ function findAndMineDiamonds(x: number, z: number) {
 }
 
 const Container = () => {
-  const [visible, setVisible] = useState(false);
   const [value, setValue] = useState("");
   const [hover, setHover] = useState(false);
   const [message, setMessage] = useState("");
 
-  function toggleUI() {
-    setVisible((v) => {
-      if (!container.hasPointerLock && !v) return v;
-      container.setPointerLock(v);
-      return !v;
-    });
-  }
-
-  useEffect(() => {
-    inputs.bind("mine-diamonds", "M");
-    inputs.down.on("mine-diamonds", toggleUI);
-  }, []);
-
-  return visible ? (
+  return (
     <div style={Wrapper}>
-      <div style={Background} onClick={toggleUI} />
       <div style={Inner}>
         <p>Find and Mine Diamonds starting at this position. Checks a 50x50 area.</p>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <input
           value={value}
           onInput={(e) => setValue((e.target as HTMLInputElement).value)}
@@ -70,9 +55,9 @@ const Container = () => {
           onFocus={() => (inputs.disabled = true)}
           onBlur={() => (inputs.disabled = false)}
         />
-        <br/>
+        <br />
         <p>{message}</p>
-        <br/>
+        <br />
         <div
           onClick={() => {
             const [x, z] = value.split(",");
@@ -91,25 +76,14 @@ const Container = () => {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 const Wrapper = `
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  align-content: center;
-  justify-content: center;
-  pointer-events: none;
-`;
-
-const Background = `
-  position: absolute;
-  pointer-events: all;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.2);
+  position: relative;
+  width: 256px;
+  top: 100px;
+  left: 36px;
 `;
 
 const Inner = `
@@ -146,12 +120,14 @@ const Button = (hover: boolean) => `
 // Cleanup function to call when plugin gets reloaded
 function cleanup() {
   document.getElementById(ID)?.remove();
-  inputs.unbind("mine-diamonds");
 }
 
 // Create a new react root to mount this element
 cleanup();
 const root = document.createElement("div");
 root.id = ID;
+root.setAttribute("style", `
+  height: 100vh;
+`);
 document.body.appendChild(root);
 render(<Container />, root);
