@@ -2,6 +2,7 @@
 export const systemToId = {
   BuildSystem: "system.Build",
   BulkSetStateSystem: "ember.system.bulkSetState",
+  BulkTransferSystem: "system.BulkTransfer",
   ClaimSystem: "system.Claim",
   ComponentDevSystem: "ember.system.componentDev",
   CraftSystem: "system.Craft",
@@ -11,7 +12,6 @@ export const systemToId = {
   MineSystem: "system.Mine",
   NameSystem: "system.Name",
   OccurrenceSystem: "system.Occurrence",
-  RegisterPluginSystem: "system.RegisterPlugin",
   StakeSystem: "system.Stake",
   TransferSystem: "system.Transfer",
 };
@@ -19,6 +19,7 @@ export const systemToId = {
 export const idToSystem = {
   "system.Build": "BuildSystem",
   "ember.system.bulkSetState": "BulkSetStateSystem",
+  "system.BulkTransfer": "BulkTransferSystem",
   "system.Claim": "ClaimSystem",
   "ember.system.componentDev": "ComponentDevSystem",
   "system.Craft": "CraftSystem",
@@ -28,7 +29,6 @@ export const idToSystem = {
   "system.Mine": "MineSystem",
   "system.Name": "NameSystem",
   "system.Occurrence": "OccurrenceSystem",
-  "system.RegisterPlugin": "RegisterPluginSystem",
   "system.Stake": "StakeSystem",
   "system.Transfer": "TransferSystem",
 };
