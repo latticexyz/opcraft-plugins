@@ -677,6 +677,7 @@ export type Layers = {
 export type Window = typeof window & {
     layers: Layers;
     ecs: typeof ecs;
+    remountReact: () => Promise<void>;
 };
 
 //# sourceMappingURL=index.d.ts.map
