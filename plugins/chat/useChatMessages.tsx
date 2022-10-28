@@ -5,12 +5,17 @@ const {
   network: { relay },
 } = window.layers;
 
+type ChatMessage = {
+  seenAt: number;
+  message: string;
+};
+
 const chatMessagePrefix = "gchat:";
 const chatApiEndpoint = "https://opchat.vercel.app/api/discord";
 
 export const useChatMessages = () => {
   const { displayName } = useDisplayName();
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   // fetch message history
   useEffect(() => {
@@ -18,7 +23,14 @@ export const useChatMessages = () => {
       const res = await fetch(`${chatApiEndpoint}/messages`);
       const data = await res.json();
       if (data.messages) {
-        setMessages(data.messages.map((message: any) => message.content));
+        setMessages(
+          data.messages.map(
+            (message: any): ChatMessage => ({
+              seenAt: Date.now(),
+              message: message.content,
+            })
+          )
+        );
       }
     };
     fetchMessages();
@@ -29,11 +41,18 @@ export const useChatMessages = () => {
     if (!relay) throw new Error("No relay");
 
     const subscription = relay.event$.subscribe((event) => {
+      console.log("got event", event);
       const decoder = new TextDecoder();
       const decodedMessage = decoder.decode(event.message.data);
       if (decodedMessage.startsWith(chatMessagePrefix)) {
         const message = decodedMessage.slice(chatMessagePrefix.length);
-        setMessages((messages) => [...messages, message]);
+        setMessages((messages) => [
+          ...messages,
+          {
+            seenAt: Date.now(),
+            message,
+          },
+        ]);
       }
     });
 
@@ -42,28 +61,38 @@ export const useChatMessages = () => {
     };
   });
 
-  const postMessage = useCallback(async (input: string) => {
-    if (!relay) throw new Error("No relay");
+  const postMessage = useCallback(
+    async (input: string) => {
+      if (!relay) throw new Error("No relay");
 
-    const message = `<${displayName}> ${input}`;
+      const message = `<${displayName}> ${input}`;
 
-    const textEncoder = new TextEncoder();
-    // add prefix until label is exposed as part of the message object
-    const encodedMessage = textEncoder.encode(`${chatMessagePrefix}${message}`);
-    setMessages((messages) => [...messages, message]);
-    console.log("pushing message to relay", encodedMessage);
-    await relay.push("gchat", encodedMessage);
-    await fetch(`${chatApiEndpoint}/sendMessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message,
-      }),
-    });
-    // TODO: roll back message if push fails?
-  }, []);
+      const textEncoder = new TextEncoder();
+      // add prefix until label is exposed as part of the message object
+      const encodedMessage = textEncoder.encode(`${chatMessagePrefix}${message}`);
+      // TODO: remove this once we can listen to our own relay messages
+      setMessages((messages) => [
+        ...messages,
+        {
+          seenAt: Date.now(),
+          message,
+        },
+      ]);
+      console.log("pushing message to relay", encodedMessage);
+      await relay.push("gchat", encodedMessage);
+      await fetch(`${chatApiEndpoint}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+        }),
+      });
+      // TODO: roll back message if push fails?
+    },
+    [displayName]
+  );
 
   return {
     messages,

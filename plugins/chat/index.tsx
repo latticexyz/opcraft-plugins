@@ -3,12 +3,22 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { useChatMessages } from "./useChatMessages";
 import { useDisplayName } from "./useDisplayName";
 
+const useCurrentTime = (tick = 1000) => {
+  const [time, setTime] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setTime(Date.now()), tick);
+    return () => clearInterval(interval);
+  }, []);
+  return time;
+};
+
 const Root = () => {
   const [active, setActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { displayName } = useDisplayName();
   const { messages, postMessage } = useChatMessages();
+  const now = useCurrentTime();
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -29,12 +39,14 @@ const Root = () => {
     };
   }, []);
 
+  const visibleMessages = active ? messages.slice(-20) : messages.filter((m) => m.seenAt + 1000 * 10 > now).slice(-10);
+
   return (
     <>
       <div class={`OPChat ${active ? "OPChat--active" : ""}`}>
         <div class="OPChat-messages" hidden={!messages.length}>
-          {messages.slice(active ? -20 : -10).map((message, i) => (
-            <div key={i}>{message}</div>
+          {visibleMessages.map((message, i) => (
+            <div key={i}>{message.message}</div>
           ))}
         </div>
         <form
