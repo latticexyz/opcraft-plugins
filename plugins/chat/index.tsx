@@ -36,7 +36,6 @@ const Root = () => {
         <ChatMessages messages={messages} active={active} />
         <form
           onSubmit={(event) => {
-            console.log("submitted");
             event.preventDefault();
             const input = inputRef.current;
             if (input?.value) {

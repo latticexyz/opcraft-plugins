@@ -24,9 +24,7 @@ export const useDisplayName = () => {
     if (!entityIndex) return;
 
     const subscription = Name.update$.subscribe((update) => {
-      console.log("got name update", update, entityIndex);
       if (update.entity === entityIndex) {
-        console.log("entity matched!");
         const componentValue = getComponentValue(Name, entityIndex);
         if (componentValue?.value) {
           setUsername(componentValue.value);
