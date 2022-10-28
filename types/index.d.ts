@@ -168,6 +168,7 @@ declare function createNetworkLayer(config: GameConfig): Promise<{
         getBlockAtPosition: (position: VoxelCoord) => EntityID;
         getECSBlockAtPosition: (position: VoxelCoord) => EntityID | undefined;
         getTerrainBlockAtPosition: (position: VoxelCoord) => EntityID;
+        getEntityAtPosition: (position: VoxelCoord) => EntityIndex;
         getName: (address: EntityID) => string | undefined;
         addPlugin: (value: ComponentValue<{
             host: import("@latticexyz/recs").Type.String;
@@ -181,6 +182,11 @@ declare function createNetworkLayer(config: GameConfig): Promise<{
         removePluginRegistry: (url: string) => void;
         reloadPluginRegistry: (entity: EntityIndex) => void;
         reloadPluginRegistryUrl: (url: string) => void;
+        registerComponent: (key: string, component: import("@latticexyz/std-client/dist/setup/setupMUDNetwork").ContractComponent) => void;
+        registerSystem: (system: {
+            id: string;
+            contract: import("ethers").Contract;
+        }) => Promise<void>;
     };
     dev: {
         setContractComponentValue: <T_2 extends import("@latticexyz/recs").Schema>(entity: EntityIndex, component: import("@latticexyz/recs").Component<T_2, {
@@ -519,6 +525,66 @@ declare function createNetworkLayer(config: GameConfig): Promise<{
         };
     }>, {}> | undefined;
     uniqueWorldId: string;
+    types: {
+        BlockIdToKey: {
+            [key: EntityID]: "Bedrock" | "BlackFlower" | "BlueFlower" | "Clay" | "Coal" | "CyanFlower" | "Diamond" | "Dirt" | "Grass" | "GrassPlant" | "GrayFlower" | "GreenFlower" | "Kelp" | "Leaves" | "LightBlueFlower" | "LightGrayFlower" | "LimeFlower" | "Log" | "MagentaFlower" | "OrangeFlower" | "PinkFlower" | "PurpleFlower" | "RedFlower" | "Sand" | "Snow" | "Stone" | "Water" | "Wool" | "Air" | "Glass" | "Cobblestone" | "MossyCobblestone" | "Crafting" | "Iron" | "Gold" | "Planks" | "OrangeWool" | "MagentaWool" | "LightBlueWool" | "YellowWool" | "LimeWool" | "PinkWool" | "GrayWool" | "LightGrayWool" | "CyanWool" | "PurpleWool" | "BlueWool" | "BrownWool" | "GreenWool" | "RedWool" | "BlackWool" | "Sponge" | "Bricks";
+        };
+        BlockType: {
+            Air: EntityID;
+            Grass: EntityID;
+            Dirt: EntityID;
+            Log: EntityID;
+            Stone: EntityID;
+            Sand: EntityID;
+            Glass: EntityID;
+            Water: EntityID;
+            Cobblestone: EntityID;
+            MossyCobblestone: EntityID;
+            Coal: EntityID;
+            Crafting: EntityID;
+            Iron: EntityID;
+            Gold: EntityID;
+            Diamond: EntityID;
+            Leaves: EntityID;
+            Planks: EntityID;
+            RedFlower: EntityID;
+            GrassPlant: EntityID;
+            OrangeFlower: EntityID;
+            MagentaFlower: EntityID;
+            LightBlueFlower: EntityID;
+            LimeFlower: EntityID;
+            PinkFlower: EntityID;
+            GrayFlower: EntityID;
+            LightGrayFlower: EntityID;
+            CyanFlower: EntityID;
+            PurpleFlower: EntityID;
+            BlueFlower: EntityID;
+            GreenFlower: EntityID;
+            BlackFlower: EntityID;
+            Kelp: EntityID;
+            Wool: EntityID;
+            OrangeWool: EntityID;
+            MagentaWool: EntityID;
+            LightBlueWool: EntityID;
+            YellowWool: EntityID;
+            LimeWool: EntityID;
+            PinkWool: EntityID;
+            GrayWool: EntityID;
+            LightGrayWool: EntityID;
+            CyanWool: EntityID;
+            PurpleWool: EntityID;
+            BlueWool: EntityID;
+            BrownWool: EntityID;
+            GreenWool: EntityID;
+            RedWool: EntityID;
+            BlackWool: EntityID;
+            Sponge: EntityID;
+            Snow: EntityID;
+            Clay: EntityID;
+            Bedrock: EntityID;
+            Bricks: EntityID;
+        };
+    };
 }>;
 type NoaLayer = Awaited<ReturnType<typeof createNoaLayer>>;
 declare function createNoaLayer(network: NetworkLayer): {
