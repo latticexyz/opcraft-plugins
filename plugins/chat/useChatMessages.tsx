@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "preact/hooks";
 import { useDisplayName } from "./useDisplayName";
 
-const {
-  network: { relay },
-} = window.layers;
-
-type ChatMessage = {
+export type ChatMessage = {
   seenAt: number;
   message: string;
 };
+
+const {
+  network: { relay },
+} = window.layers;
 
 const chatMessagePrefix = "gchat:";
 const chatApiEndpoint = "https://opchat.vercel.app/api/discord";
@@ -41,7 +41,6 @@ export const useChatMessages = () => {
     if (!relay) throw new Error("No relay");
 
     const subscription = relay.event$.subscribe((event) => {
-      console.log("got event", event);
       const decoder = new TextDecoder();
       const decodedMessage = decoder.decode(event.message.data);
       if (decodedMessage.startsWith(chatMessagePrefix)) {
@@ -56,9 +55,7 @@ export const useChatMessages = () => {
       }
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   });
 
   const postMessage = useCallback(
@@ -78,8 +75,11 @@ export const useChatMessages = () => {
           message,
         },
       ]);
+
       console.log("pushing message to relay", encodedMessage);
       await relay.push("gchat", encodedMessage);
+
+      console.log("posting message to discord");
       await fetch(`${chatApiEndpoint}/sendMessage`, {
         method: "POST",
         headers: {
