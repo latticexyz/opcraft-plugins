@@ -11,6 +11,7 @@ const {
 } = window.layers;
 
 const chatMessagePrefix = "gchat:";
+const chatRelayLabel = "gchat";
 const chatApiEndpoint = "https://opchat.vercel.app/api/discord";
 
 export const useChatMessages = () => {
@@ -40,6 +41,7 @@ export const useChatMessages = () => {
   useEffect(() => {
     if (!relay) throw new Error("No relay");
 
+    relay.subscribe(chatRelayLabel);
     const subscription = relay.event$.subscribe((event) => {
       const decoder = new TextDecoder();
       const decodedMessage = decoder.decode(event.message.data);
@@ -55,7 +57,10 @@ export const useChatMessages = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      relay.unsubscribe(chatRelayLabel);
+    };
   });
 
   const postMessage = useCallback(
@@ -77,7 +82,7 @@ export const useChatMessages = () => {
       ]);
 
       console.log("pushing message to relay", encodedMessage);
-      await relay.push("gchat", encodedMessage);
+      await relay.push(chatRelayLabel, encodedMessage);
 
       console.log("posting message to discord");
       await fetch(`${chatApiEndpoint}/sendMessage`, {
