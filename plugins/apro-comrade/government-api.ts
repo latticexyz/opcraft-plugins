@@ -51,15 +51,22 @@ export function getGovernmentContractAddress() {
   return GovernmentContractAddress;
 }
 
-((components as any).SystemsRegistry as typeof components.Item).update$.subscribe((update) => {
-  const val = update.value[0];
-  if (!val) return;
+const existingGovtContract = getGovernmentContractAddress();
 
-  if (val.value === keccak256("apro.system.Upgradable.12")) {
-    const govtContract = new Contract(getGovernmentContractAddress(), UpgradableSystemABI, signer.get());
-    registerSystem({ id: "Government", contract: govtContract });
-  }
-});
+if (existingGovtContract) {
+  const govtContract = new Contract(getGovernmentContractAddress(), UpgradableSystemABI, signer.get());
+  registerSystem({ id: "Government", contract: govtContract });
+} else {
+  ((components as any).SystemsRegistry as typeof components.Item).update$.subscribe((update) => {
+    const val = update.value[0];
+    if (!val) return;
+
+    if (val.value === keccak256("apro.system.Upgradable.12")) {
+      const govtContract = new Contract(getGovernmentContractAddress(), UpgradableSystemABI, signer.get());
+      registerSystem({ id: "Government", contract: govtContract });
+    }
+  });
+}
 
 export async function waitForAction(id: EntityID) {
   const actionIndex = world.getEntityIndexStrict(id);
