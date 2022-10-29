@@ -2,6 +2,7 @@
 export const systemToId = {
   BuildSystem: "system.Build",
   BulkSetStateSystem: "ember.system.bulkSetState",
+  BulkStakeSystem: "system.BulkStake",
   BulkTransferSystem: "system.BulkTransfer",
   ClaimSystem: "system.Claim",
   ComponentDevSystem: "ember.system.componentDev",
@@ -19,6 +20,7 @@ export const systemToId = {
 export const idToSystem = {
   "system.Build": "BuildSystem",
   "ember.system.bulkSetState": "BulkSetStateSystem",
+  "system.BulkStake": "BulkStakeSystem",
   "system.BulkTransfer": "BulkTransferSystem",
   "system.Claim": "ClaimSystem",
   "ember.system.componentDev": "ComponentDevSystem",
