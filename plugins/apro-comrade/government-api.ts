@@ -243,7 +243,7 @@ export function loadPlugin(governmentContractAddress: string) {
 
   // Update greeting
   const governmentID = world.registerEntity({ id: governmentContractAddress as EntityID });
-  setComponent(components.Name, governmentID, { value: "Comrade" });
+  setComponent(components.Name, governmentID, { value: "Autonomous People's Republic of OPCraft" });
 
   // Reload react UI
   (window as Window).remountReact();
