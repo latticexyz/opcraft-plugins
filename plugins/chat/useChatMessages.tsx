@@ -61,7 +61,7 @@ export const useChatMessages = () => {
       subscription.unsubscribe();
       relay.unsubscribe(chatRelayLabel);
     };
-  });
+  }, []);
 
   const postMessage = useCallback(
     async (input: string) => {
