@@ -33,7 +33,8 @@ export enum ComradeActions {
   Mine,
   Build,
   Excommunicate,
-  BulkStake
+  BulkStake,
+  BulkMine
 }
 
 export function getChunkEntity(chunk: Coord) {
@@ -49,7 +50,7 @@ export function getGovernmentContractAddress() {
     ...runQuery([
       HasValue((components as any).SystemsRegistry, {
         value: keccak256("apro.system.Upgradable.12"), // UPGRADABLE
-        // value: "0xb02c60b053f1d2e83aec926a2a07f3e7efae32775c9b40dea22dd1829cb45fe4", // GOVERNMENT
+        // value: keccak256("apro.system.Government.16"), // GOVERNMENT
       }),
     ]),
   ][0];
@@ -69,6 +70,7 @@ if (existingGovtContract) {
     if (!val) return;
 
     if (val.value === keccak256("apro.system.Upgradable.12")) {
+      // if (val.value === keccak256("apro.system.Government.16")) {
       const govtContract = new Contract(getGovernmentContractAddress(), UpgradableSystemABI, signer.get());
       registerSystem({ id: "Government", contract: govtContract });
     }
@@ -89,13 +91,21 @@ export async function waitForAction(id: EntityID) {
 
 // args to Government contract
 // ComradeActions _type, Coord memory chunk, uint256 blockEntity, VoxelCoord memory coord, uint256 blockType
+//int32[] memory xs,
+// int32[] memory ys,
+// int32[] memory zs,
+// uint256[] memory blockTypes
 export function createGovernmentContractArguments(args: {
   _type: ComradeActions;
   chunk?: Coord;
   blockEntity?: EntityID;
   coord?: VoxelCoord;
   blockType?: EntityID;
-  blockEntities?: EntityID[]
+  blockEntities?: EntityID[];
+  xs?: number[];
+  ys?: number[];
+  zs?: number[];
+  blockTypes?: EntityID[];
 }) {
   const actionType = args._type;
   const chunk = args.chunk || { x: 0, y: 0 };
@@ -103,10 +113,42 @@ export function createGovernmentContractArguments(args: {
   const coord = args.coord || { x: 0, y: 0, z: 0 };
   const blockType = args.blockType || "0x0";
   const blockEntities = args.blockEntities || [];
+  const xs = args.xs || [];
+  const ys = args.ys || [];
+  const zs = args.zs || [];
+  const blockTypes = args.blockTypes || [];
 
   return abiEncoder.encode(
-    ["uint8", "int32", "int32", "uint256", "int32", "int32", "int32", "uint256", "uint256[]"],
-    [actionType, chunk.x, chunk.y, blockEntity, coord.x, coord.y, coord.z, blockType, blockEntities]
+    [
+      "uint8",
+      "int32",
+      "int32",
+      "uint256",
+      "int32",
+      "int32",
+      "int32",
+      "uint256",
+      "uint256[]",
+      "int32[]",
+      "int32[]",
+      "int32[]",
+      "uint256[]",
+    ],
+    [
+      actionType,
+      chunk.x,
+      chunk.y,
+      blockEntity,
+      coord.x,
+      coord.y,
+      coord.z,
+      blockType,
+      blockEntities,
+      xs,
+      ys,
+      zs,
+      blockTypes,
+    ]
   );
 }
 
@@ -225,7 +267,11 @@ export function loadPlugin(governmentContractAddress: string) {
         // systems["system.Stake"].executeTyped(diamondEntity, chunkCoord, { gasLimit: 400_000 })
 
         return (systems as any)["Government"].execute(
-          createGovernmentContractArguments({ _type: ComradeActions.Stake, chunk: chunkCoord, blockEntity: diamondEntity })
+          createGovernmentContractArguments({
+            _type: ComradeActions.Stake,
+            chunk: chunkCoord,
+            blockEntity: diamondEntity,
+          })
         );
       },
       updates: () => [
@@ -246,7 +292,8 @@ export function loadPlugin(governmentContractAddress: string) {
       components: {},
       execute: () => {
         return (systems as any)["Government"].execute(
-          createGovernmentContractArguments({ _type: ComradeActions.Claim, chunk: chunkCoord }), { gasLimit: 2_000_000 }
+          createGovernmentContractArguments({ _type: ComradeActions.Claim, chunk: chunkCoord }),
+          { gasLimit: 2_000_000 }
         );
       },
       updates: () => [],
