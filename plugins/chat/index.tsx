@@ -71,6 +71,7 @@ const Root = () => {
           bottom: 132px;
           left: 50px;
           right: 50px;
+          z-index: 100;
           display: flex;
           flex-direction: column;
           gap: 5px;
