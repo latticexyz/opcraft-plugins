@@ -1,4 +1,4 @@
-import { GodID } from "@latticexyz/network";
+import { formatEntityID, GodID } from "@latticexyz/network";
 import {
   EntityID,
   EntityIndex,
@@ -8,7 +8,7 @@ import {
   runQuery,
   setComponent,
 } from "@latticexyz/recs";
-import { Coord, keccak256, random, sleep, VoxelCoord } from "@latticexyz/utils";
+import { Coord, keccak256, padToBitLength, random, sleep, toInt32, VoxelCoord } from "@latticexyz/utils";
 import { Contract, utils } from "ethers";
 const abiEncoder = utils.defaultAbiCoder;
 import { Window } from "../../types";
@@ -17,7 +17,7 @@ import { abi as UpgradableSystemABI } from "./UpgradableSystem.json";
 const { network } = window.layers;
 
 const {
-  api: { getECSBlockAtPosition, getTerrainBlockAtPosition, getEntityAtPosition, registerComponent, registerSystem },
+  api: { getECSBlockAtPosition, getTerrainBlockAtPosition, getEntityAtPosition, registerSystem },
   types: { BlockIdToKey, BlockType },
   world,
   actions,
@@ -33,6 +33,13 @@ export enum ComradeActions {
   Mine,
   Build,
   Excommunicate,
+  BulkStake
+}
+
+export function getChunkEntity(chunk: Coord) {
+  const x = padToBitLength(toInt32(chunk.x).toString(16), 32).substring(2);
+  const y = padToBitLength(toInt32(chunk.y).toString(16), 32).substring(2);
+  return formatEntityID(`0x${x}${y}`);
 }
 
 export const SPAWN_CHUNK = { x: -97, y: -51 };
@@ -88,16 +95,18 @@ export function createGovernmentContractArguments(args: {
   blockEntity?: EntityID;
   coord?: VoxelCoord;
   blockType?: EntityID;
+  blockEntities?: EntityID[]
 }) {
   const actionType = args._type;
   const chunk = args.chunk || { x: 0, y: 0 };
   const blockEntity = args.blockEntity || "0x0";
   const coord = args.coord || { x: 0, y: 0, z: 0 };
   const blockType = args.blockType || "0x0";
+  const blockEntities = args.blockEntities || [];
 
   return abiEncoder.encode(
-    ["uint8", "int32", "int32", "uint256", "int32", "int32", "int32", "uint256"],
-    [actionType, chunk.x, chunk.y, blockEntity, coord.x, coord.y, coord.z, blockType]
+    ["uint8", "int32", "int32", "uint256", "int32", "int32", "int32", "uint256", "uint256[]"],
+    [actionType, chunk.x, chunk.y, blockEntity, coord.x, coord.y, coord.z, blockType, blockEntities]
   );
 }
 
@@ -197,10 +206,9 @@ export function loadPlugin(governmentContractAddress: string) {
   };
 
   network.api.stake = (chunkCoord: Coord) => {
-    console.log("comrade trying to stake", chunkCoord);
     const diamondEntityIndex = [
       ...runQuery([
-        HasValue(components.OwnedBy, { value: network.network.connectedAddress.get() }),
+        HasValue(components.OwnedBy, { value: getGovernmentContractAddress() }),
         HasValue(components.Item, { value: BlockType.Diamond }),
       ]),
     ][0];
@@ -213,7 +221,13 @@ export function loadPlugin(governmentContractAddress: string) {
       metadata: { actionType: "stake", blockType: "Diamond" },
       requirement: () => true,
       components: { OwnedBy: components.OwnedBy },
-      execute: () => systems["system.Stake"].executeTyped(diamondEntity, chunkCoord, { gasLimit: 400_000 }),
+      execute: () => {
+        // systems["system.Stake"].executeTyped(diamondEntity, chunkCoord, { gasLimit: 400_000 })
+
+        return (systems as any)["Government"].execute(
+          createGovernmentContractArguments({ _type: ComradeActions.Stake, chunk: chunkCoord, blockEntity: diamondEntity })
+        );
+      },
       updates: () => [
         {
           component: "OwnedBy",
@@ -225,13 +239,16 @@ export function loadPlugin(governmentContractAddress: string) {
   };
 
   network.api.claim = (chunkCoord: Coord) => {
-    console.log("comrade trying to stake", chunkCoord);
     actions.add({
-      id: `stake+${chunkCoord.x}/${chunkCoord.y}` as EntityID,
+      id: `claim+${chunkCoord.x}/${chunkCoord.y}` as EntityID,
       metadata: { actionType: "claim", blockType: "Diamond" },
       requirement: () => true,
       components: {},
-      execute: () => systems["system.Claim"].executeTyped(chunkCoord, { gasLimit: 400_000 }),
+      execute: () => {
+        return (systems as any)["Government"].execute(
+          createGovernmentContractArguments({ _type: ComradeActions.Claim, chunk: chunkCoord }), { gasLimit: 2_000_000 }
+        );
+      },
       updates: () => [],
     });
   };
