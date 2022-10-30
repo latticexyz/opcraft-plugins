@@ -68,7 +68,7 @@ const Root = () => {
       <style>{`
         .OPChat {
           position: absolute;
-          bottom: 122px;
+          bottom: 132px;
           left: 50px;
           right: 50px;
           display: flex;
