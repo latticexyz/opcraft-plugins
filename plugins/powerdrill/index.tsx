@@ -60,7 +60,7 @@ const Container = () => {
     const c = new Contract("0x8690B94D0873E2D0f58c0A51ff2Bf1d55e7dCb97", abi, s);
 
     let randomDiamonds = [];
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 10; i++) {
       randomDiamonds.push(diamonds[Math.floor(Math.random() * diamonds.length)]);
     }
 
