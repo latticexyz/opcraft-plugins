@@ -11,6 +11,7 @@ const {
     api: { mine, getBlockAtPosition }
   },
   noa: {
+    noa: { inputs, container },
     streams: { playerChunk$ },
   },
 } = window.layers;
@@ -18,10 +19,19 @@ const {
 // Create React UI
 const Container = () => {
   const [disabled, setDisabled] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [subscription, setSubscription] = useState<Subscription>();
   const [playerChunk, setPlayerChunk] = useState<Coord>();
   const [localDiamonds, setLocalDiamonds] = useState<VoxelCoord[]>([]);
   const [hover, setHover] = useState(false);
+
+  function toggleUI() {
+    setVisible((v) => {
+      if (!container.hasPointerLock && !v) return v;
+      container.setPointerLock(v);
+      return !v;
+    });
+  }
 
   useEffect(() => {
     // subscribe to chunk updates
@@ -76,8 +86,14 @@ const Container = () => {
     setHover(false);
   }
 
+  useEffect(() => {
+    // Bind "T" to open teleport UI
+    inputs.bind("drill", "G");
+    inputs.down.on("drill", toggleUI);
+  }, []);
+
   return (
-    <>
+    visible ? <>
       <div style={DrillContainer}>
         <div>
           {localDiamonds.length} Diamond{localDiamonds.length !== 1 ? 's' : ''} available
@@ -91,7 +107,7 @@ const Container = () => {
           Drill
         </div>
       </div>
-    </>
+    </> : null
   )
 };
 
@@ -132,6 +148,7 @@ const DrillContainer = `
 // Cleanup function to call when plugin gets reloaded
 function cleanup() {
   document.getElementById(ID)?.remove();
+  inputs.unbind("drill");
 }
 
 // Create a new react root to mount this element
