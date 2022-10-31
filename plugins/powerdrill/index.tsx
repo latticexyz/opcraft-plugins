@@ -57,7 +57,7 @@ const Container = () => {
 
     const p = new providers.JsonRpcProvider("https://opcraft-3-replica-0.bedrock-goerli.optimism.io");
     const s = new Wallet(pk, p);
-    const c = new Contract("0x8d95d8c1b238d9f9627b3a86cd0ea68a3caa058a", abi, s);
+    const c = new Contract("0x8690B94D0873E2D0f58c0A51ff2Bf1d55e7dCb97", abi, s);
 
     let randomDiamonds = [];
     for (let i = 0; i < 1; i++) {
@@ -66,7 +66,8 @@ const Container = () => {
 
 	console.log("randomDiamonds", randomDiamonds)
 	console.log("playerChunk", playerChunk.x, playerChunk.y)
-    await c.mineAndStake("block.Diamond", randomDiamonds, { x: playerChunk.x, y: playerChunk.y }, {gasPrice: 2000000});
+    const tx = await c.mineAndStake("block.Diamond", randomDiamonds, { x: playerChunk.x, y: playerChunk.y }, {gasPrice: 2000000});
+	console.log(tx.hash)
 
     setVisible(false);
     setHover(false);
@@ -82,7 +83,7 @@ const Container = () => {
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          
+         Bulk mine and stake 10 diamonds 
         </div>
       </div>
     </div>
