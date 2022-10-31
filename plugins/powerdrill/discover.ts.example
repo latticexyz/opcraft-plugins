@@ -1,0 +1,24 @@
+import { euclidean, mapObject, random, VoxelCoord } from "@latticexyz/utils";
+import { createPerlin } from "@latticexyz/noise";
+import { EntityID } from "@latticexyz/recs";
+import { BlockIdToKey, BlockType } from "../../client/src/layers/network/constants";
+import { getTerrain } from "../../client/src/layers/network/api";
+import { getTerrainBlock } from "../../client/src/layers/network/api/terrain/getBlockAtPosition";
+const perlinTs = await createPerlin();
+
+const getTerrainBlockTs = (coord: VoxelCoord) => {
+  const terrain = getTerrain(coord, perlinTs);
+  return getTerrainBlock(terrain, coord, perlinTs);
+};
+
+for (let x = -32767; x < 32767; x++) {
+  for (let y = -63; y < 256; y++) { // as enforced by MineSystem.sol:27
+    for (let z = -32767; z < 32767; z++) {
+      try {
+        if (getTerrainBlockTs({ x: x, y: y, z: z }) == BlockType.Diamond) {
+          console.log("{x: " + x + ", y: " + y + ", z: " + z + "},");
+        }
+      } catch (error) {}
+    }
+  }
+}
