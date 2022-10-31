@@ -68,7 +68,7 @@ const Container = () => {
     }
     setLocalDiamonds(diamondCoords);
     setDisabled(diamondCoords.length === 0);
-  }, [playerChunk, localDiamonds, setLocalDiamonds, setDisabled, getBlockAtPosition]);
+  }, [playerChunk, setLocalDiamonds, setDisabled, getBlockAtPosition]);
 
   function executeDrill() {
     // check if there are no diamonds
