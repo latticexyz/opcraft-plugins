@@ -36,7 +36,7 @@ const Container = () => {
     // [Textures.Bricks]: 'https://i.imgur.com/sW4X9yI.png',
     // [Textures.Glass]: 'https://i.imgur.com/sW4X9yI.png',
     // [Textures.Sand]: 'https://i.imgur.com/sW4X9yI.png',
-    // [Textures.Dirt]: 'https://i.imgur.com/sW4X9yI.png',
+    [Textures.Dirt]: 'https://i.imgur.com/taBBKX4.png',
     // [Textures.Stone]: 'https://i.imgur.com/sW4X9yI.png',
     // [Textures.Water]: 'https://i.imgur.com/sW4X9yI.png',
     // [Textures.Cobblestone]: 'https://i.imgur.com/sW4X9yI.png',
