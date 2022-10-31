@@ -1,0 +1,18 @@
+# Autonomous People's Republic of OPCraft
+
+This plugin is a combo smart contract/client plugin that allows players to join The Autonomous People's Republic of OPCraft.
+
+The Autonomous People's Republic of OPCraft managed to claim all of the land around the OPCraft spawn using a custom diamond mining plugin.
+
+Players are able to load the plugin and pledge their allegiance to me, the Supreme Leader OP.
+When they pledge, all of their blocks are transferred to the government and added to its treasury.
+Their inventory is then replaced with the government's, allowing for a truly shared OPCraft experience.
+
+From that point forward all Mines, Builds, Stakes, and Claims are proxied through the government.
+They also have access to build on any of the government's claimed land.
+
+Members gain Comrade Ranks by Mining and Building for The Autonomous People's Republic of OPCraft.
+
+Long live The Autonomous People's Republic of OPCraft 🫡
+
+**Supreme Leader OP**
