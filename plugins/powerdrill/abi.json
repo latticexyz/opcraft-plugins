@@ -1,0 +1,281 @@
+{
+	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "worldAddress",
+					"type": "address"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"inputs": [],
+			"name": "claimSystem",
+			"outputs": [
+				{
+					"internalType": "contract ClaimSystem",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "blockName",
+					"type": "string"
+				},
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "z",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct VoxelCoord[]",
+					"name": "coords",
+					"type": "tuple[]"
+				}
+			],
+			"name": "mine",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "blockName",
+					"type": "string"
+				},
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "z",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct VoxelCoord[]",
+					"name": "coords",
+					"type": "tuple[]"
+				},
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct Coord",
+					"name": "chunk",
+					"type": "tuple"
+				}
+			],
+			"name": "mineAndStake",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "mineSystem",
+			"outputs": [
+				{
+					"internalType": "contract MineSystem",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "blockName",
+					"type": "string"
+				},
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "z",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct VoxelCoord[]",
+					"name": "coords",
+					"type": "tuple[]"
+				}
+			],
+			"name": "mineTo",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "blockName",
+					"type": "string"
+				},
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "z",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct VoxelCoord[]",
+					"name": "coords",
+					"type": "tuple[]"
+				},
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct Coord",
+					"name": "chunk",
+					"type": "tuple"
+				}
+			],
+			"name": "mineToAndStake",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "int32",
+							"name": "x",
+							"type": "int32"
+						},
+						{
+							"internalType": "int32",
+							"name": "y",
+							"type": "int32"
+						}
+					],
+					"internalType": "struct Coord",
+					"name": "chunk",
+					"type": "tuple"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "entities",
+					"type": "uint256[]"
+				}
+			],
+			"name": "stake",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "stakeSystem",
+			"outputs": [
+				{
+					"internalType": "contract StakeSystem",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "transferSystem",
+			"outputs": [
+				{
+					"internalType": "contract TransferSystem",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		}
+	]
+}
